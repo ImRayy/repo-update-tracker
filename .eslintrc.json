@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "plugin:@next/next/recommended",
+    "next/core-web-vitals",
+    "eslint:recommended",
+    "next"
+  ],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "@next/next/no-img-element": "off",
+    "no-console": "warn",
+    "prefer-const": "warn"
+  },
+  "ignorePatterns": ["api/", "post/"]
+}
