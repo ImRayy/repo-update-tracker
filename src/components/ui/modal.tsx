@@ -16,26 +16,37 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import React, { ReactNode, SetStateAction, useState } from "react";
+import React, { ReactNode, SetStateAction } from "react";
 import { Button } from "./button";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
 interface ModalProps {
-  btnText: string;
-  title: string;
-  description?: string;
+  btnLabel: string | React.ReactNode;
   children: ReactNode;
+  description?: string;
   open: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
+  title: string;
 }
 
-const Modal = ({ open, setOpen, title, description, children }: ModalProps) => {
+const Modal = ({
+  btnLabel,
+  children,
+  description,
+  open,
+  setOpen,
+  title,
+}: ModalProps) => {
   const isMobile = useMediaQuery();
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerTrigger asChild>
-          <Button variant="outline">Edit Profile</Button>
+          {typeof btnLabel === "string" ? (
+            <Button>{btnLabel}</Button>
+          ) : (
+            btnLabel
+          )}
         </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader className="text-left">
@@ -56,7 +67,7 @@ const Modal = ({ open, setOpen, title, description, children }: ModalProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Edit Profile</Button>
+        {typeof btnLabel === "string" ? <Button>{btnLabel}</Button> : btnLabel}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

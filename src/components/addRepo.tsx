@@ -1,5 +1,6 @@
 import { fetchFromGitHub } from "@/lib/GitHub";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { CirclePlus } from "lucide-react";
 import React, { useState } from "react";
 import { useFirestore } from "reactfire";
 import { Button } from "./ui/button";
@@ -52,7 +53,17 @@ const AddRepo = () => {
     }
   };
   return (
-    <Modal open={open} setOpen={setOpen} title="Add new repo" btnText="none">
+    <Modal
+      open={open}
+      setOpen={setOpen}
+      title="Add new repo"
+      btnLabel={
+        <Button className="inline-flex gap-2 items-center">
+          <CirclePlus size={20} />
+          Add repo
+        </Button>
+      }
+    >
       <form onSubmit={fromSubmitHandler} className={`grid items-start gap-4`}>
         <div className="grid gap-2">
           <Input
