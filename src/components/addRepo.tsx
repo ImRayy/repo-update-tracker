@@ -5,11 +5,11 @@ import { useFirestore } from "reactfire";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import Modal from "./ui/modal";
-
-import { toast } from "sonner";
+import { useToast } from "./ui/use-toast";
 
 const AddRepo = () => {
   const [open, setOpen] = useState(false);
+  const { toast } = useToast();
   const firestore = useFirestore();
   const fromSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,7 +27,10 @@ const AddRepo = () => {
         );
         const snapshot = await getDoc(ref);
         if (snapshot.exists()) {
-          toast.error("Repo already exists");
+          toast({
+            variant: "destructive",
+            title: "Repo already exists!",
+          });
           setOpen(false);
         } else {
           try {
@@ -36,7 +39,9 @@ const AddRepo = () => {
               description: repoData.description ?? "",
               url: repoData.url,
             });
-            toast("Success");
+            toast({
+              title: "Successfully added repo!",
+            });
             setOpen(false);
           } catch (error) {
             // eslint-disable-next-line no-console

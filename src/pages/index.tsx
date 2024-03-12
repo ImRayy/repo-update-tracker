@@ -2,8 +2,7 @@ import AddRepo from "@/components/addRepo";
 import { Inter } from "next/font/google";
 import { FirestoreProvider } from "reactfire";
 import { db as FirestoreInstance } from "@/lib/firebase";
-import { Toaster } from "sonner";
-
+import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
   return (
