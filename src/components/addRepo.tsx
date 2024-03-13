@@ -15,11 +15,10 @@ const AddRepo = () => {
   const fromSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const repo = formData.get("repo");
+    let repo = formData.get("repo");
     if (repo !== "") {
-      const repoData = await fetchFromGitHub(
-        (repo as string).split("/").splice(3).join("/")
-      );
+      repo = (repo as string).split("/").splice(3).join("/");
+      const repoData = await fetchFromGitHub(repo);
       if (repoData) {
         const ref = doc(
           firestore,
@@ -36,9 +35,10 @@ const AddRepo = () => {
         } else {
           try {
             setDoc(ref, {
-              name: repoData.name,
+              avatar_url: repoData.owner.avatar_url,
+              name: repo,
               description: repoData.description ?? "",
-              url: repoData.url,
+              url: repoData.html_url,
             });
             toast({
               title: "Successfully added repo!",
