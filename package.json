@@ -24,6 +24,7 @@
     "octokit": "^3.1.2",
     "react": "^18",
     "react-dom": "^18",
+    "react-hook-form": "^7.51.0",
     "reactfire": "^4.2.3",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
