@@ -7,9 +7,11 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useAuth } from "reactfire";
+import { useAuth, useFirestore } from "reactfire";
 import { Button } from "../ui/button";
 
 type Inputs = {
@@ -21,6 +23,7 @@ type Inputs = {
 const SignUp = () => {
   const [showPassError, setShowPassError] = useState(false);
   const auth = useAuth();
+  const firestore = useFirestore();
 
   const { register, handleSubmit, watch } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = (data) => {
@@ -29,6 +32,11 @@ const SignUp = () => {
       return;
     }
     createUserWithEmailAndPassword(auth, data.email, data.password);
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setDoc(doc(firestore, "users", user.uid), {});
+      }
+    });
   };
 
   return (
