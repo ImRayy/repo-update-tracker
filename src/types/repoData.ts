@@ -4,4 +4,5 @@ export type RepoData = {
   name: string;
   url: string;
   version: string;
+  newVersion?: string;
 };
