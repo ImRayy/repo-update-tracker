@@ -1,11 +1,11 @@
 import {
   GoogleAuthProvider,
   signInWithPopup,
-  signInAnonymously,
+  GithubAuthProvider,
 } from "firebase/auth";
 import React from "react";
 import { useAuth } from "reactfire";
-import MDIAnonymous from "../icons/anonymous";
+import MDIGithub from "../icons/github";
 import FlatColorIconsGoogle from "../icons/google";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
@@ -14,15 +14,18 @@ import Divider from "./divider";
 const Others = () => {
   const { toast } = useToast();
   const auth = useAuth();
-  const signInWithGoogleHandler = async () => {
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
-  };
-  const signInAnonymouslyHandler = async () => {
-    await signInAnonymously(auth)
-      .then(() => toast({ title: "Successfully signed in!" }))
-      // eslint-disable-next-line no-console
-      .catch((error) => console.error(error));
+  const signInHandler = async (type: "google" | "github") => {
+    if (type === "google") {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider).then(() =>
+        toast({ title: "Successfully signed in with Google" })
+      );
+    } else if (type === "github") {
+      const provider = new GithubAuthProvider();
+      await signInWithPopup(auth, provider).then(() =>
+        toast({ title: "Successfully signed in with GitHub" })
+      );
+    }
   };
 
   return (
@@ -32,15 +35,15 @@ const Others = () => {
         <Button
           variant="outline"
           className="w-full space-x-2"
-          onClick={signInAnonymouslyHandler}
+          onClick={() => signInHandler("github")}
         >
-          <MDIAnonymous fontSize={18} />
-          <span>Anonymous</span>
+          <MDIGithub fontSize={18} />
+          <span>GitHub</span>
         </Button>
         <Button
           variant="outline"
           className="w-full space-x-2"
-          onClick={signInWithGoogleHandler}
+          onClick={() => signInHandler("google")}
         >
           <FlatColorIconsGoogle fontSize={18} />
           <span>Google</span>

@@ -1,4 +1,4 @@
-import { fetchFromGitHub, fetchLatestVersion } from "@/lib/GitHub";
+import { fetchLatestVersion } from "@/lib/GitHub";
 import { RepoData } from "@/types/repoData";
 import { DocumentData, collection } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
