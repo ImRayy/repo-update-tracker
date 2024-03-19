@@ -38,7 +38,6 @@ const CardsFirestore = ({ userId }: { userId: string }) => {
           title={repo.name}
           description={repo.description}
           thumbnail={repo.avatar_url}
-          url={repo.url}
           version={repo.version}
           newVersion={repo.newVersion}
         />
@@ -89,7 +88,6 @@ const CardsLocalStorage = () => {
           title={repo.name}
           description={repo.description}
           thumbnail={repo.avatar_url}
-          url={repo.url}
           version={repo.version}
           newVersion={repo.newVersion}
         />
