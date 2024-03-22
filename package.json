@@ -30,6 +30,7 @@
     "remark-gfm": "^4.0.0",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
+    "telegramify-markdown": "^1.1.1",
     "vaul": "^0.9.0"
   },
   "devDependencies": {

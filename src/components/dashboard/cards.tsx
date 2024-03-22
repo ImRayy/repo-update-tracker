@@ -1,16 +1,24 @@
 import { fetchLatestVersion } from "@/lib/GitHub";
 import { RepoData } from "@/types/repoData";
-import { DocumentData, collection } from "firebase/firestore";
+import { DocumentData, collection, doc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { useFirestore, useFirestoreCollectionData } from "reactfire";
+import {
+  useFirestore,
+  useFirestoreCollectionData,
+  useFirestoreDocData,
+} from "reactfire";
 import Card from "./card";
 
 const CardsFirestore = ({ userId }: { userId: string }) => {
-  const [repoData, setrepoData] = useState<DocumentData[]>([]);
+  const [repoData, setRepoData] = useState<DocumentData[]>([]);
   const firestore = useFirestore();
   const ref = collection(firestore, "users", userId, "repos");
+  const refUserData = doc(firestore, "users", userId);
 
   const { status, data } = useFirestoreCollectionData(ref);
+  const { status: userStatus, data: userData } =
+    useFirestoreDocData(refUserData);
+
   useEffect(() => {
     (async () => {
       const list = [];
@@ -22,9 +30,9 @@ const CardsFirestore = ({ userId }: { userId: string }) => {
         );
         list.push(Object.assign(data[i], { newVersion: newVersion }));
       }
-      setrepoData(list);
+      setRepoData(list);
     })();
-  }, [status, data]);
+  }, [status, data, userStatus]);
 
   if (status === "loading") {
     return <div>Loading...</div>;
@@ -40,6 +48,7 @@ const CardsFirestore = ({ userId }: { userId: string }) => {
           thumbnail={repo.avatar_url}
           version={repo.version}
           newVersion={repo.newVersion}
+          chatId={userData?.chatId}
         />
       ))}
     </div>
@@ -48,9 +57,11 @@ const CardsFirestore = ({ userId }: { userId: string }) => {
 
 const CardsLocalStorage = () => {
   const [data, setData] = useState<RepoData[]>([]);
+  const [chatId, setChatId] = useState("");
   useEffect(() => {
     (async () => {
       if (typeof window.localStorage !== "undefined" && window.localStorage) {
+        setChatId(localStorage.getItem("chatId") ?? "");
         const newData: RepoData[] = [];
         for (let i = 0; i < localStorage.length; i++) {
           // fetching all data from localStorage
@@ -90,6 +101,7 @@ const CardsLocalStorage = () => {
           thumbnail={repo.avatar_url}
           version={repo.version}
           newVersion={repo.newVersion}
+          chatId={chatId}
         />
       ))}
     </div>
@@ -103,8 +115,7 @@ type CardsProps =
 const Cards = (props: CardsProps) => {
   if (props.dbType === "firestore") {
     return <CardsFirestore userId={props.userId} />;
-  } else if (props.dbType === "localStorage") {
-    return <CardsLocalStorage />;
   }
+  return <CardsLocalStorage />;
 };
 export default Cards;

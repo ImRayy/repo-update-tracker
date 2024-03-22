@@ -1,24 +1,40 @@
+import { fetchFromGitHub } from "@/lib/GitHub";
+import { RepoReleaseData } from "@/types/repoData";
 import { CircleCheck } from "lucide-react";
-import React from "react";
-import MingcuteTelegram from "../icons/telegram";
+import React, { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import InfoCard from "./infoCard";
+import SendPostToTG from "./sendPostToTG";
 import VersionBadge from "./versionBadge";
 
 interface CardProps {
+  chatId?: string;
   title: string;
   description?: string;
   thumbnail: string;
   version: string;
   newVersion?: string | undefined;
 }
+
 const Card = ({
+  chatId,
   title,
   description,
   thumbnail,
   version,
   newVersion,
 }: CardProps) => {
+  const [releaseData, setReleaseData] = useState<RepoReleaseData>();
+
+  useEffect(() => {
+    (async () => {
+      if (title && title !== "") {
+        const res = await fetchFromGitHub(title, "releases");
+        setReleaseData(res[0]);
+      }
+    })();
+  }, [title]);
+
   return (
     <div className="grid select-none grid-cols-5 gap-2 rounded-md border p-2">
       <section className="col-span-1 aspect-square overflow-hidden rounded-md">
@@ -34,18 +50,11 @@ const Card = ({
             </li>
           </ul>
           <span>
-            <InfoCard repo={title} />
+            <InfoCard title={title} releaseData={releaseData} />
           </span>
         </div>
         <div className="pt-full space-x-2 pt-4">
-          <Button
-            variant="secondary"
-            size="sm"
-            className="space-x-1 bg-[#30A3E6] text-white hover:bg-[#1daafb]"
-          >
-            <MingcuteTelegram fontSize={18} color="white" />
-            <span>Telegram</span>
-          </Button>
+          <SendPostToTG releaseData={releaseData} chatId={chatId ?? ""} />
           <Button variant="secondary" size="sm" className="space-x-1">
             <CircleCheck size={18} className="text-green-600" />
             <span>Done</span>
