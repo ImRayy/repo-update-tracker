@@ -16,6 +16,7 @@ export interface RepoReleaseAssets {
 }
 export interface RepoReleaseData {
   tag_name: string;
+  published_at: string;
   body: string;
   assets: RepoReleaseAssets[];
 }
