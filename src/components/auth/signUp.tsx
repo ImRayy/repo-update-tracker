@@ -6,6 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { fetchFromLocalStorage } from "@/utils/syncData";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
@@ -34,7 +35,20 @@ const SignUp = () => {
     createUserWithEmailAndPassword(auth, data.email, data.password);
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        setDoc(doc(firestore, "users", user.uid), {});
+        fetchFromLocalStorage({ dataType: "default" }).then((d) => {
+          d.data.map((repo) => {
+            setDoc(
+              doc(
+                firestore,
+                "users",
+                user.uid,
+                "repos",
+                repo.name.split("/").join("-")
+              ),
+              repo
+            );
+          });
+        });
       }
     });
   };

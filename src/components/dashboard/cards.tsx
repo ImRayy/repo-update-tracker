@@ -1,5 +1,6 @@
 import { fetchLatestVersion } from "@/lib/GitHub";
 import { RepoData } from "@/types/repoData";
+import { fetchFromLocalStorage } from "@/utils/syncData";
 import { DocumentData, collection, doc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import {
@@ -59,37 +60,10 @@ const CardsLocalStorage = () => {
   const [data, setData] = useState<RepoData[]>([]);
   const [chatId, setChatId] = useState("");
   useEffect(() => {
-    (async () => {
-      if (typeof window.localStorage !== "undefined" && window.localStorage) {
-        setChatId(localStorage.getItem("chatId") ?? "");
-        const newData: RepoData[] = [];
-        for (let i = 0; i < localStorage.length; i++) {
-          // fetching all data from localStorage
-          const key = localStorage.key(i);
-          if (key && key.startsWith("repo-")) {
-            // fetching data from repo that starts with repo
-            const value = localStorage.getItem(key);
-            if (value) {
-              const parsedData = JSON.parse(value);
-
-              // checks for new version
-              const { version: newVersion } = await fetchLatestVersion(
-                parsedData.name,
-                parsedData.published_at
-              );
-
-              newData.push(
-                // appending new object filed to repo data
-                Object.assign(parsedData, {
-                  newVersion: newVersion,
-                })
-              );
-            }
-          }
-        }
-        setData(newData);
-      }
-    })();
+    fetchFromLocalStorage({ dataType: "latest" }).then((d) => {
+      setChatId(d.chatId ?? "");
+      setData(d.data);
+    });
   }, []);
   return (
     <div className="grid gap-2 md:grid-cols-2">
