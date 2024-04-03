@@ -1,5 +1,6 @@
 import AddRepo from "@/components/addRepo";
 import AddTgChatId from "@/components/addTgChatId";
+import SignOut from "@/components/auth/signOut";
 import Cards from "@/components/dashboard/cards";
 import { Toaster } from "@/components/ui/toaster";
 import { Inter } from "next/font/google";
@@ -23,6 +24,7 @@ export default function Home() {
             <div className="inline-flex items-center gap-2">
               <AddTgChatId />
               <AddRepo />
+              {signInCheckResult.signedIn && <SignOut />}
             </div>
           </section>
           {signInCheckResult.signedIn ? (
